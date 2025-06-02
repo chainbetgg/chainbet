@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1v1 Firebase Poker</title>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script defer src="app.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-green-800 text-white min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-3xl p-4 text-center">
+    <h1 class="text-4xl mb-4 font-bold">1v1 Poker Game</h1>
+    <div id="game">
+      <p id="status">Initializing...</p>
+      <div id="table" class="grid grid-cols-2 gap-2 mt-4 hidden">
+        <div class="player-area" id="player1">
+          <p class="text-xl">Player 1</p>
+          <div class="hand flex justify-center gap-2 mt-2" id="hand1"></div>
+          <p class="mt-2" id="bet1">Bet: 0</p>
+        </div>
+        <div class="player-area" id="player2">
+          <p class="text-xl">Player 2</p>
+          <div class="hand flex justify-center gap-2 mt-2" id="hand2"></div>
+          <p class="mt-2" id="bet2">Bet: 0</p>
+        </div>
+      </div>
+      <div id="controls" class="mt-4 hidden">
+        <button id="bet" class="bg-yellow-400 px-4 py-2 rounded text-black">Bet 10</button>
+        <button id="fold" class="bg-red-500 px-4 py-2 rounded ml-2">Fold</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
