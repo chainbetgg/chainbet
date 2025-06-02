@@ -175,6 +175,59 @@ betBtn.onclick = async () => {
   }
 };
 
+function serializeCards(cardArray) {
+  return cardArray.map(c => ({ suit: c.suit, rank: c.rank }));
+}
+
+function deserializeCards(cardArray) {
+  return cardArray.map(c => ({ suit: c.suit, rank: c.rank }));
+}
+
+// Patch to fix nested array issue when creating the game
+async function createGameDocument(db, userId, deck, hand1, hand2, board) {
+  const doc = await db.collection("games").add({
+    createdAt: Date.now(),
+    host: userId,
+    players: [userId],
+    deck: serializeCards(deck),
+    hand1: serializeCards(hand1),
+    hand2: serializeCards(hand2),
+    board: serializeCards(board),
+    bet1: 0,
+    bet2: 0,
+    pot: 0,
+    state: "waiting",
+    turn: 0
+  });
+  return doc.id;
+}
+
+// Replace game creation call in init()
+async function init() {
+  const user = await auth.signInAnonymously();
+  userId = user.user.uid;
+
+  if (!gameId) {
+    const deck = shuffleDeck();
+    const hand1 = deck.splice(0, 2);
+    const hand2 = deck.splice(0, 2);
+    const board = deck.splice(0, 5);
+
+    gameId = await createGameDocument(db, userId, deck, hand1, hand2, board);
+    status.textContent = `Game created! Share this link: ${window.location.href}?game=${gameId}`;
+  } else {
+    const gameRef = db.collection("games").doc(gameId);
+    const doc = await gameRef.get();
+    if (!doc.exists) return alert("Invalid game");
+
+    const game = doc.data();
+    if (game.players.length < 2 && !game.players.includes(userId)) {
+      await gameRef.update({ players: [...game.players, userId], state: "playing" });
+    }
+    subscribeToGame(gameRef);
+  }
+}
+
 foldBtn.onclick = async () => {
   alert("Folded! You lose.");
   const gameRef = db.collection("games").doc(gameId);
